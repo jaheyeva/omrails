@@ -1,9 +1,13 @@
 class Pin < ActiveRecord::Base
-  attr_accessible :description
+  attr_accessible :description, :image
 
-  validates :description, presence: { :message => "Please add description." }, length: { in: 3..20, too_short: "Description is too short. Minimum %{count} characters are required.",
-    too_long: "%{count} characters is the only maximum allowed" }
+  has_attached_file :image, styles: { medium: "320x240>"}
 
-   	belongs_to :user
-   	validates :user_id, presence: true
+  validates :description, presence: true
+  validates :user_id, presence: true
+  validates_attachment :image, presence: true,
+                            content_type: { content_type: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'] },
+                            size: { less_than: 5.megabytes }
+  belongs_to :user
+  
 end
